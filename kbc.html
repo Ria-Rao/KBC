@@ -3,30 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KBC Game</title>
+    <title>KBC Game Host</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #question { font-size: 24px; margin: 20px; }
+        #qr-code { margin: 20px; }
+        #congratulations, #wrong-answer { display: none; }
+        button { margin: 20px; padding: 10px 20px; font-size: 16px; }
+    </style>
 </head>
 <body>
-    <h1>KBC Game</h1>
-    <p id="question">What is the capital of France?</p>
-    <img id="qrcode" src="https://api.qrserver.com/v1/create-qr-code/?data=http://192.168.1.35:8000/mobile.html&size=150x150" alt="QR Code">
-    <h2>Participants</h2>
-    <div id="participants"></div>
+    <h1>KBC Game Host</h1>
+    <div id="question">Question will appear here</div>
+    <div id="qr-code">
+        <img id="qrImage" src="" alt="QR Code" />
+    </div>
+    <div id="congratulations" style="color: green;"></div>
+    <div id="wrong-answer" style="color: red;"></div>
+
     <script>
-        function displayCongratulations(name) {
-            document.getElementById("participants").innerHTML += `<p>Congratulations ${name}!</p>`;
+        const questions = [
+            { question: "What is the capital of France?", answer: "Paris" },
+            { question: "Which planet is known as the Red Planet?", answer: "Mars" },
+            { question: "What is the largest ocean on Earth?", answer: "Pacific Ocean" },
+            { question: "Who wrote 'Romeo and Juliet'?", answer: "William Shakespeare" },
+            { question: "What is the smallest prime number?", answer: "2" }
+        ];
+
+        let currentQuestion = 0;
+
+        // Function to generate QR code
+        function generateQRCode(questionIndex) {
+            const url = `https://ria-rao.github.io/KBC/mobile.html?question=${encodeURIComponent(questions[questionIndex].question)}&index=${questionIndex}`;
+            const qrCode = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(url)}&size=200x200`;
+            document.getElementById('qrImage').src = qrCode;
         }
 
-        // Simulated correct answer checking
-        const correctAnswer = "Paris";  // Set the correct answer for the question
-
-        // Dummy function to simulate answer checking (to be replaced with actual logic)
-        window.checkAnswer = function(name, answer) {
-            if (answer.toLowerCase() === correctAnswer.toLowerCase()) {
-                displayCongratulations(name);
+        // Load next question
+        function loadQuestion() {
+            if (currentQuestion < questions.length) {
+                document.getElementById('question').innerText = questions[currentQuestion].question;
+                generateQRCode(currentQuestion);
+                document.getElementById('congratulations').style.display = 'none';
+                document.getElementById('wrong-answer').style.display = 'none';
             } else {
-                alert("Incorrect answer!");
+                document.getElementById('question').innerText = "Game Over!";
+                document.getElementById('qrImage').style.display = 'none';
             }
-        };
+        }
+
+        // Function to show message when an answer is submitted
+        function showMessage(isCorrect, name) {
+            if (isCorrect) {
+                document.getElementById('congratulations').innerText = `Congratulations, ${name}!`;
+                document.getElementById('congratulations').style.display = 'block';
+                currentQuestion++;
+                setTimeout(loadQuestion, 3000); // Move to next question after 3 seconds
+            } else {
+                document.getElementById('wrong-answer').innerText = "Wrong answer, try again!";
+                document.getElementById('wrong-answer').style.display = 'block';
+            }
+        }
+
+        // Start the first question
+        loadQuestion();
+
+        // Listen for answers from mobile page via URL parameters
+        window.addEventListener('message', (event) => {
+            const { isCorrect, name } = event.data;
+            showMessage(isCorrect, name);
+        });
     </script>
 </body>
 </html>
