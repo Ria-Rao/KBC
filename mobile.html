@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBC Game - Player</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>KBC Game</h1>
+        <h2 id="question">Loading question...</h2>
+
+        <div id="name-input" style="display: block;">
+            <h3>Please enter your name:</h3>
+            <input type="text" id="player-name" placeholder="Your Name">
+            <button id="submit-name">Submit</button>
+        </div>
+
+        <div id="answer-input" style="display: none;">
+            <h3>Your Answer:</h3>
+            <input type="text" id="player-answer" placeholder="Enter your answer">
+            <button id="submit-answer">Submit Answer</button>
+        </div>
+
+        <h3 id="response"></h3>
+    </div>
+
+    <script>
+        const playerNameInput = document.getElementById('player-name');
+        const submitNameButton = document.getElementById('submit-name');
+        const nameInputDiv = document.getElementById('name-input');
+        const answerInputDiv = document.getElementById('answer-input');
+        const questionElement = document.getElementById('question');
+        const playerAnswerInput = document.getElementById('player-answer');
+        const submitAnswerButton = document.getElementById('submit-answer');
+        const responseElement = document.getElementById('response');
+
+       
+        fetch('/next_question')
+            .then(response => response.json())
+            .then(data => {
+                questionElement.innerText = data.question;
+                answerInputDiv.style.display = 'none'; 
+            });
+
+ 
+        submitNameButton.addEventListener('click', () => {
+            const playerName = playerNameInput.value;
+            if (playerName) {
+                fetch('/submit_name', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ name: playerName })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    responseElement.innerText = data.message;
+                    nameInputDiv.style.display = 'none'; 
+                    answerInputDiv.style.display = 'block';
+                });
+            } else {
+                alert('Please enter your name!');
+            }
+        });
+
+        submitAnswerButton.addEventListener('click', () => {
+            const answer = playerAnswerInput.value;
+            if (answer) {
+                fetch('/submit_answer', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ answer: answer })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    responseElement.innerText = data.message;
+                    if (data.correct) {
+                        fetch('/next_question')
+                            .then(response => response.json())
+                            .then(nextQuestion => {
+                                questionElement.innerText = nextQuestion.question;
+                            });
+                    }
+                });
+            } else {
+                alert('Please enter your answer!');
+            }
+        });
+    </script>
+</body>
+</html>

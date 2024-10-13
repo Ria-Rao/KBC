@@ -1,0 +1,33 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBC Game - Host</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>KBC Game</h1>
+        <h2 id="question">Waiting for players...</h2>
+        <img id="qr-code" src="" alt="QR Code" />
+    </div>
+    
+    <script>
+        function generateQRCode() {
+            const url = window.location.origin + '/mobile'; 
+            const qrCode = document.getElementById('qr-code');
+            qrCode.src = 'https://api.qrserver.com/v1/create-qr-code/?data=' + encodeURIComponent(url) + '&size=150x150';
+        }
+
+       
+        fetch('/next_question')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('question').innerText = data.question;
+                generateQRCode();
+            });
+    </script>
+</body>
+</html>
