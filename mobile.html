@@ -36,10 +36,12 @@
 
             if (answer.toLowerCase() === correctAnswer[questionIndex].toLowerCase()) {
                 document.getElementById('response').innerText = `Correct! Well done, ${name}.`;
-                // Communicate result back to the host page
+                // Redirect to host page with result
                 window.location.href = `https://ria-rao.github.io/KBC/index.html?result=correct&name=${encodeURIComponent(name)}`;
             } else {
                 document.getElementById('response').innerText = "Wrong answer, try again.";
+                // Redirect to host page with incorrect result
+                window.location.href = `https://ria-rao.github.io/KBC/index.html?result=incorrect`;
             }
         }
     </script>
