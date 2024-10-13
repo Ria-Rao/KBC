@@ -1,3 +1,4 @@
+KBC-Style Game
 The KBC-Style Game is an interactive quiz application inspired by the popular game show "Kaun Banega Crorepati" (KBC). Players can participate by scanning a QR code displayed on a host's computer screen. After entering their names on their mobile devices, they can answer questions in real-time. Correct answers will display a congratulatory message on the host's screen, while incorrect answers will notify the player on their mobile interface.
 
 Features
