@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBC Game</title>
+</head>
+<body>
+    <h1>KBC Game</h1>
+    <p id="question">What is the capital of France?</p>
+    <img id="qrcode" src="https://api.qrserver.com/v1/create-qr-code/?data=http://192.168.1.35:8000/mobile.html&size=150x150" alt="QR Code">
+    <h2>Participants</h2>
+    <div id="participants"></div>
+    <script>
+        function displayCongratulations(name) {
+            document.getElementById("participants").innerHTML += `<p>Congratulations ${name}!</p>`;
+        }
+
+        // Simulated correct answer checking
+        const correctAnswer = "Paris";  // Set the correct answer for the question
+
+        // Dummy function to simulate answer checking (to be replaced with actual logic)
+        window.checkAnswer = function(name, answer) {
+            if (answer.toLowerCase() === correctAnswer.toLowerCase()) {
+                displayCongratulations(name);
+            } else {
+                alert("Incorrect answer!");
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KBC Game - Mobile</title>
+</head>
+<body>
+    <h1>Enter Your Details</h1>
+    <input type="text" id="playerName" placeholder="Enter your name">
+    <input type="text" id="playerAnswer" placeholder="Enter your answer">
+    <button onclick="submitAnswer()">Submit Answer</button>
+
+    <script>
+        function submitAnswer() {
+            const name = document.getElementById("playerName").value;
+            const answer = document.getElementById("playerAnswer").value;
+
+            // Here you would send the answer to the server or directly check the answer.
+            // For this example, we'll simulate it.
+            if (name) {
+                window.opener.checkAnswer(name, answer); // Call the function from kbc.html
+                alert(`Your answer "${answer}" has been submitted!`);
+            } else {
+                alert("Please enter your name!");
+            }
+        }
+    </script>
+</body>
+</html>
