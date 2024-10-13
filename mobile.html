@@ -3,46 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KBC Mobile</title>
-    <style>
-        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
-    </style>
+    <title>KBC Game Player</title>
 </head>
 <body>
-    <h1>Answer the Question!</h1>
+    <h1>KBC Game Player</h1>
     <div id="question"></div>
-    <input type="text" id="nameInput" placeholder="Enter your name" />
-    <input type="text" id="answerInput" placeholder="Enter your answer" />
-    <button onclick="submitAnswer()">Submit</button>
-    <div id="response" style="margin-top: 20px;"></div>
+    <input type="text" id="name" placeholder="Enter your name" />
+    <input type="text" id="answer" placeholder="Your answer" />
+    <button id="submitButton" onclick="submitAnswer()">Submit Answer</button>
+    <div id="result" style="display: none;"></div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const question = urlParams.get('question');
-        const questionIndex = urlParams.get('index');
-        const correctAnswer = {
-            0: "Paris",
-            1: "Mars",
-            2: "Pacific Ocean",
-            3: "William Shakespeare",
-            4: "2"
-        };
+        const index = parseInt(urlParams.get('index'), 10);
 
         document.getElementById('question').innerText = question;
 
         function submitAnswer() {
-            const name = document.getElementById('nameInput').value;
-            const answer = document.getElementById('answerInput').value.trim();
+            const name = document.getElementById('name').value;
+            const answer = document.getElementById('answer').value;
+            const hostPage = "https://ria-rao.github.io/KBC/index.html";
 
-            if (answer.toLowerCase() === correctAnswer[questionIndex].toLowerCase()) {
-                document.getElementById('response').innerText = `Correct! Well done, ${name}.`;
-                // Redirect to host page with result
-                window.location.href = `https://ria-rao.github.io/KBC/index.html?result=correct&name=${encodeURIComponent(name)}`;
+            const correctAnswer = [
+                "Paris", "Mars", "Pacific Ocean", "William Shakespeare", "2"
+            ][index];
+
+            if (answer.trim().toLowerCase() === correctAnswer.toLowerCase()) {
+                const resultMessage = `Congratulations, ${name}! You got it right!`;
+                document.getElementById('result').innerText = resultMessage;
+                document.getElementById('result').style.color = "green";
+                document.getElementById('result').style.display = 'block';
             } else {
-                document.getElementById('response').innerText = "Wrong answer, try again.";
-                // Redirect to host page with incorrect result
-                window.location.href = `https://ria-rao.github.io/KBC/index.html?result=incorrect`;
+                const resultMessage = "Wrong answer, try again!";
+                document.getElementById('result').innerText = resultMessage;
+                document.getElementById('result').style.color = "red";
+                document.getElementById('result').style.display = 'block';
             }
+
+            // Notify the host page through a redirect
+            window.location.href = hostPage; // Redirect to host page after submission
         }
     </script>
 </body>
