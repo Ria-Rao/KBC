@@ -18,6 +18,7 @@
     </div>
     <div id="congratulations" style="color: green; display: none;"></div>
     <div id="wrong-answer" style="color: red; display: none;"></div>
+    <button id="nextButton" onclick="nextQuestion()">Next Question</button>
 
     <script>
         const questions = [
@@ -36,39 +37,32 @@
             document.getElementById('qrImage').src = qrCode;
         }
 
-        function showResult() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const result = urlParams.get('result');
-            const name = urlParams.get('name');
-
-            if (result === "correct") {
-                document.getElementById('congratulations').innerText = `Congratulations, ${name}! Correct answer.`;
-                document.getElementById('congratulations').style.display = 'block';
-                document.getElementById('wrong-answer').style.display = 'none';
-                setTimeout(nextQuestion, 3000); // Move to next question after 3 seconds
-            } else if (result === "incorrect") {
-                document.getElementById('wrong-answer').innerText = "Wrong answer. Try again.";
-                document.getElementById('wrong-answer').style.display = 'block';
-                document.getElementById('congratulations').style.display = 'none';
-            }
-        }
-
         function nextQuestion() {
             if (currentQuestion < questions.length) {
                 document.getElementById('question').innerText = questions[currentQuestion].question;
                 generateQRCode(currentQuestion);
-                currentQuestion++;
                 document.getElementById('congratulations').style.display = 'none';
                 document.getElementById('wrong-answer').style.display = 'none';
+                currentQuestion++;
             } else {
                 document.getElementById('question').innerText = "Game Over!";
                 document.getElementById('qrImage').style.display = 'none';
+                document.getElementById('nextButton').style.display = 'none'; // Hide the button when game is over
             }
         }
 
-        // Initialize first question and show any result if present
+        function showMessage(isCorrect, name) {
+            if (isCorrect) {
+                document.getElementById('congratulations').innerText = `Congratulations, ${name}!`;
+                document.getElementById('congratulations').style.display = 'block';
+            } else {
+                document.getElementById('wrong-answer').innerText = "Wrong answer, try again!";
+                document.getElementById('wrong-answer').style.display = 'block';
+            }
+        }
+
+        // Start with the first question
         nextQuestion();
-        showResult();
     </script>
 </body>
 </html>
