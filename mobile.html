@@ -3,26 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KBC Game - Mobile</title>
+    <title>KBC Game Mobile</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        #question { font-size: 24px; margin: 20px; }
+        input, button { margin: 10px; padding: 10px; font-size: 16px; }
+    </style>
 </head>
 <body>
-    <h1>Enter Your Details</h1>
-    <input type="text" id="playerName" placeholder="Enter your name">
-    <input type="text" id="playerAnswer" placeholder="Enter your answer">
+    <h1>KBC Game Player</h1>
+    <div id="question">Question will appear here</div>
+    <input type="text" id="name" placeholder="Enter your name" required />
+    <input type="text" id="answer" placeholder="Enter your answer" required />
     <button onclick="submitAnswer()">Submit Answer</button>
 
     <script>
-        function submitAnswer() {
-            const name = document.getElementById("playerName").value;
-            const answer = document.getElementById("playerAnswer").value;
+        const urlParams = new URLSearchParams(window.location.search);
+        const question = urlParams.get('question');
+        const questionIndex = urlParams.get('index');
 
-            // Here you would send the answer to the server or directly check the answer.
-            // For this example, we'll simulate it.
-            if (name) {
-                window.opener.checkAnswer(name, answer); // Call the function from kbc.html
-                alert(`Your answer "${answer}" has been submitted!`);
+        document.getElementById('question').innerText = question;
+
+        function submitAnswer() {
+            const playerName = document.getElementById('name').value;
+            const playerAnswer = document.getElementById('answer').value;
+
+            const correctAnswer = questionIndex == 0 ? 'Paris' :
+                                  questionIndex == 1 ? 'Mars' :
+                                  questionIndex == 2 ? 'Pacific Ocean' :
+                                  questionIndex == 3 ? 'William Shakespeare' : '2';
+
+            const isCorrect = (playerAnswer.toLowerCase() === correctAnswer.toLowerCase());
+
+            // Send result back to host page
+            window.opener.postMessage({ isCorrect, name: playerName }, '*');
+
+            if (isCorrect) {
+                alert(`Congratulations, ${playerName}! Your answer is correct.`);
             } else {
-                alert("Please enter your name!");
+                alert("Sorry, your answer is wrong.");
             }
         }
     </script>
